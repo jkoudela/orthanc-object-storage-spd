@@ -343,8 +343,11 @@ AzureBlobStoragePlugin::AzureBlobStoragePlugin(const std::string& nameForLogs,
           storageContainsUnknownFiles_(storageContainsUnknownFiles)
 {
     // Initialize the logger with a JSON formatter, a file sink, and a colorized stdout sink
+    const char* logDir = std::getenv("LOGDIR");
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("azurestorage.log", true);
+//    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>("azurestorage.log", true);
+    std::string logFilePath = (logDir ? std::string(logDir) : ".") + "/azurestorage.log";
+    auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logFilePath, true);
     auto logger = std::make_shared<spdlog::logger>(nameForLogs, spdlog::sinks_init_list{console_sink, file_sink});
     logger->set_level(spdlog::level::info);
     logger->set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%n] [%^%l%$] %v");
